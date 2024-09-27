@@ -1,0 +1,23 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- main
+
+pool:
+  vmImage: ubuntu-latest
+stages:
+- stage: OX_Security_Scan
+  jobs:
+  - job: OX
+    displayName: Run OX Security Scan
+    steps:
+    - task: CmdLine@2
+      inputs:
+        script: |-
+          docker run \
+            -e OX_API_KEY=$(OX_API_KEY) \
+            --env-file <(env | grep 'SYSTEM_\|BUILD_') \
+            oxsecurity/ox-block-mode:latest
